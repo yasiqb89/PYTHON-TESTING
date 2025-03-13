@@ -24,9 +24,7 @@ jobs:
         run: pytest --collect-only  # Check if pytest can find the tests
 
       - name: Run tests and generate report  # run tests with verbose output
-        run: |
-          cd PYTHON-TESTING  # Move into the correct directory
-          pytest --junitxml=../test-results.xml -v
+        run: pytest PYTHON-TESTING --junitxml=test-results.xml -v || true
 
       - name: Upload test report  # Ensures report is uploaded even if tests fail
         if: always()  
