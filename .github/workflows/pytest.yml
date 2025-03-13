@@ -31,11 +31,11 @@ jobs:
         run: tail -20 pytest_output.log || echo "No pytest output available"
 
       - name: Convert XML to HTML Report
-        run: junit2html test-results.xml test-report.html  # Convert XML test report to HTML
+        run: python -m junit2html test-results.xml test-report.html  # Convert XML test report to HTML
 
-      - name: Upload test report  # Ensures report is uploaded even if tests fail
+      - name: Upload HTML Test Report  # Ensures report is uploaded even if tests fail
         if: always()  
         uses: actions/upload-artifact@v4 
         with:
-          name: pytest-report
-          path: test-results.xml  # Upload the test report
+          name: pytest-html-report
+          path: test-report.html  # Upload the test report
