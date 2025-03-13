@@ -37,12 +37,13 @@ jobs:
 
       - name: Show Test Summary
         run: |
-          echo "======= Pytest Test Summary ======="
-          if [ -s /tmp/pytest_output.log ]; then  # Check if the file exists and is not empty
-             cat /tmp/pytest_output.log
+          echo "::group::Pytest Test Summary"
+          if [ -s /tmp/pytest_output.log ]; then
+            cat /tmp/pytest_output.log
           else
             echo "No pytest output available."
           fi
+            echo "::endgroup::"
 
       - name: Convert XML to HTML Report
         if: always()
@@ -61,3 +62,12 @@ jobs:
         with:
           name: pytest-html-report
           path: test-report.html  # Upload the test report
+
+
+      - name: Post Setup Python
+        if: always()
+        run: |
+          echo "::group::Post Setup Python"
+          python --version
+          pip list
+          echo "::endgroup::"
