@@ -33,7 +33,13 @@ jobs:
           exit ${PIPESTATUS[0]}  # Ensures the correct exit status is returned # Run pytest without specifying a folder
 
       - name: Show Test Summary
-        run: cat pytest_output.log || echo "No pytest output available"
+        run: |
+          if [ -f pytest_output.log ]; then
+            echo "======= Pytest Test Summary ======="
+            cat pytest_output.log
+          else
+            echo "No pytest output available."
+          fi
 
       - name: Convert XML to HTML Report
         if: always()
@@ -52,16 +58,4 @@ jobs:
         with:
           name: pytest-html-report
           path: test-report.html  # Upload the test report
-
-      - name: Notify on Failure
-        if: failure()
-        run: |
-            curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
-            -d '{
-              "state": "failure",
-              "target_url": "https://github.com/${{ github.repository }}/actions",
-              "description": "Tests failed ❌ - Check report for details",
-              "context": "CI/CD Tests"
-            }'
+          
