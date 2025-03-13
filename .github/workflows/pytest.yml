@@ -39,9 +39,10 @@ jobs:
         run: |
           echo "::group::Pytest Test Summary"
           if [ -s /tmp/pytest_output.log ]; then
+            echo "::notice:: Test Summary"
             cat /tmp/pytest_output.log
           else
-            echo "No pytest output available."
+            echo "::warning:: No pytest output available."
           fi
             echo "::endgroup::"
 
@@ -64,7 +65,7 @@ jobs:
           path: test-report.html  # Upload the test report
 
 
-      - name: Post Setup Python
+      - name: Post Environment Check
         if: always()
         run: |
           echo "::group::Post Setup Python"
