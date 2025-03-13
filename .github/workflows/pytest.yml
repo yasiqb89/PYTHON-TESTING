@@ -25,7 +25,7 @@ jobs:
 
       - name: Upload test report
         if: always()  # Ensures report is uploaded even if tests fail
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 
         with:
           name: pytest-report
           path: test-results.xml  # Upload the test report
