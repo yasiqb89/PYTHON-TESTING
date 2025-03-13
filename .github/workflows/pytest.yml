@@ -33,13 +33,18 @@ jobs:
           exit ${PIPESTATUS[0]}  # Ensures the correct exit status is returned # Run pytest without specifying a folder
 
       - name: Show Test Summary
-        run: tail -20 pytest_output.log || echo "No pytest output available"
+        run: cat pytest_output.log || echo "No pytest output available"
 
       - name: Convert XML to HTML Report
+        if: always()
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install junit2html  # Ensure installation
-          ~/.local/bin/junit2html test-results.xml test-report.html || junit2html test-results.xml test-report.html  # Run as executable
+          if [ -f test-results.xml ]; then
+            python -m pip install --upgrade pip
+            python -m pip install junit2html  # Ensure installation
+            ~/.local/bin/junit2html test-results.xml test-report.html || junit2html test-results.xml test-report.html  # Run as executable
+          else
+            echo "No test-results.xml found, skipping HTML conversion."
+          fi
 
       - name: Upload HTML Test Report  # Ensures report is uploaded even if tests fail
         if: always()  
@@ -49,8 +54,14 @@ jobs:
           path: test-report.html  # Upload the test report
 
       - name: Notify on Failure
-        if: failure()  # Runs only if tests fail
+        if: failure()
         run: |
-          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -d '{"body": "**Test Failed! ❌**\nCheck the [test report artifact](https://github.com/${{ github.repository }}/actions) for details."}' \
-          "https://api.github.com/repos/${{ github.repository }}/issues/comments"
+            curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
+            -d '{
+              "state": "failure",
+              "target_url": "https://github.com/${{ github.repository }}/actions",
+              "description": "Tests failed ❌ - Check report for details",
+              "context": "CI/CD Tests"
+            }'
