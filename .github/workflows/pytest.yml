@@ -20,5 +20,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest
 
-      - name: Run tests
-        run: pytest
+      - name: Run tests and generate report
+        run: pytest PYTHON-TESTING --junitxml=test-results.xml  # Generate test report
+
+      - name: Upload test report
+        if: always()  # Ensures report is uploaded even if tests fail
+        uses: actions/upload-artifact@v3
+        with:
+          name: pytest-report
+          path: test-results.xml  # Upload the test report
