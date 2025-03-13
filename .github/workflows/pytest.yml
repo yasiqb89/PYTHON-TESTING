@@ -38,8 +38,8 @@ jobs:
       - name: Show Test Summary
         run: |
           echo "======= Pytest Test Summary ======="
-          if [ -s pytest_output.log ]; then  # Check if the file exists and is not empty
-             cat pytest_output.log
+          if [ -s /tmp/pytest_output.log ]; then  # Check if the file exists and is not empty
+             cat /tmp/pytest_output.log
           else
             echo "No pytest output available."
           fi
