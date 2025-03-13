@@ -45,3 +45,10 @@ jobs:
         with:
           name: pytest-html-report
           path: test-report.html  # Upload the test report
+
+      - name: Notify on Failure
+        if: failure()  # Runs only if tests fail
+        run: |
+          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -d '{"body": "**Test Failed! ❌**\nCheck the [test report artifact](https://github.com/${{ github.repository }}/actions) for details."}' \
+          "https://api.github.com/repos/${{ github.repository }}/issues/comments"
