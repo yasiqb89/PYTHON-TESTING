@@ -30,13 +30,15 @@ jobs:
         id: pytest_run
         run: |
           pytest --junitxml=test-results.xml -v | tee pytest_output.log
-          exit ${PIPESTATUS[0]}  # Ensures the correct exit status is returned # Run pytest without specifying a folder
+          echo "Pytest completed with exit code ${PIPESTATUS[0]}"  # Debugging
+          cp pytest_output.log /tmp/pytest_output.log  # Save output for later
+          exit ${PIPESTATUS[0]}  # Ensures correct exit status is returned
 
       - name: Show Test Summary
         run: |
-          if [ -f pytest_output.log ]; then
+          if [ -f /tmp/pytest_output.log ]; then
             echo "======= Pytest Test Summary ======="
-            cat pytest_output.log
+            cat /tmp/pytest_output.log
           else
             echo "No pytest output available."
           fi
@@ -46,8 +48,8 @@ jobs:
         run: |
           if [ -f test-results.xml ]; then
             python -m pip install --upgrade pip
-            python -m pip install junit2html  # Ensure installation
-            ~/.local/bin/junit2html test-results.xml test-report.html || junit2html test-results.xml test-report.html  # Run as executable
+            python -m pip install junit2html  
+            ~/.local/bin/junit2html test-results.xml test-report.html || junit2html test-results.xml test-report.html
           else
             echo "No test-results.xml found, skipping HTML conversion."
           fi
@@ -58,4 +60,3 @@ jobs:
         with:
           name: pytest-html-report
           path: test-report.html  # Upload the test report
-          
