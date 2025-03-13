@@ -18,7 +18,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest
+          pip install pytest junit2html 
+
+      - name: Verify Installed Packages
+        run: pip list
 
       - name: Debug Pytest Test Discovery
         run: pytest --collect-only  # Check if pytest can find the tests
@@ -31,7 +34,7 @@ jobs:
         run: tail -20 pytest_output.log || echo "No pytest output available"
 
       - name: Convert XML to HTML Report
-        run: python -m junit2html test-results.xml test-report.html  # Convert XML test report to HTML
+        run: python -m pip install junit2html && python -m junit2html test-results.xml test-report.html  # Convert XML test report to HTML
 
       - name: Upload HTML Test Report  # Ensures report is uploaded even if tests fail
         if: always()  
