@@ -38,7 +38,7 @@ def test_divide():
     (2, True), 
     (3, True),
     (4, False),
-    (17, False), #force a failure
+    (17, True),
 ])
 def test_is_prime(num, expected):
     assert is_prime(num) == expected
