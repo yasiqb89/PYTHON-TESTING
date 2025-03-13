@@ -20,14 +20,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest
 
-      - name: Run tests and generate report
-        run: |
-            cd PYTHON-TESTING
-            pytest --junitxml=test-results.xml # Generate test report
+      - name: Debug Pytest Test Discovery
+        run: pytest --collect-only  # Check if pytest can find the tests
 
-      - name: Upload test report
-        if: always()  # Ensures report is uploaded even if tests fail
+      - name: Run tests and generate report  # run tests with verbose output
+        run: |
+          cd PYTHON-TESTING  # Ensure we're in the correct directory
+          pytest --junitxml=test-results.xml -v
+
+      - name: Upload test report  # Ensures report is uploaded even if tests fail
+        if: always()  
         uses: actions/upload-artifact@v4 
         with:
           name: pytest-report
-          path: test-results.xml  # Upload the test report
+          path: PYTHON-TESTING/test-results.xml  # Upload the test report
