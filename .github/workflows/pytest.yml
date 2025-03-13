@@ -1,4 +1,4 @@
-name: Run Pytest Tests #Code success with HTML report
+name: Run Pytest Tests # Success : functional CI pipeline
 
 on: [push, pull_request]
 
