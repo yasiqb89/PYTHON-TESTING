@@ -21,7 +21,7 @@ jobs:
           pip install pytest
 
       - name: Run tests and generate report
-        run: pytest PYTHON-TESTING --junitxml=test-results.xml  # Generate test report
+        run: pytest PYTHON-TESTING --junitxml=test-results.xml --maxfail=1 --disable-warnings # Generate test report
 
       - name: Upload test report
         if: always()  # Ensures report is uploaded even if tests fail
