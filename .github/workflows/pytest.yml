@@ -34,7 +34,10 @@ jobs:
         run: tail -20 pytest_output.log || echo "No pytest output available"
 
       - name: Convert XML to HTML Report
-        run: python -m pip install junit2html && python -m junit2html test-results.xml test-report.html  # Convert XML test report to HTML
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install junit2html  # Ensure installation
+          ~/.local/bin/junit2html test-results.xml test-report.html || junit2html test-results.xml test-report.html  # Run as executable
 
       - name: Upload HTML Test Report  # Ensures report is uploaded even if tests fail
         if: always()  
