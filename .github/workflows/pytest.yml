@@ -24,13 +24,14 @@ jobs:
         run: pytest --collect-only  # Check if pytest can find the tests
 
       - name: Run tests and generate report  # run tests with verbose output
-        run: pytest --junitxml=test-results.xml -v # Run pytest without specifying a folder
+        id: pytest_run
+        run: pytest --junitxml=test-results.xml -v | tee pytest_output.log # Run pytest without specifying a folder
 
       - name: Show Test Summary
-        run: |
-          pip install junit2html
-          junit2html test-results.xml test-report.html  # Convert to HTML
-          cat pytest_output.log | tail -20  # Show the last 20 lines of test output
+        run: tail -20 pytest_output.log || echo "No pytest output available"
+
+      - name: Convert XML to HTML Report
+        run: junit2html test-results.xml test-report.html  # Convert XML test report to HTML
 
       - name: Upload test report  # Ensures report is uploaded even if tests fail
         if: always()  
