@@ -1,4 +1,4 @@
-name: Run Pytest Tests
+name: Run Pytest Tests #Code success with HTML report
 
 on: [push, pull_request]
 
