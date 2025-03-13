@@ -30,9 +30,10 @@ jobs:
         id: pytest_run
         run: |
           pytest --junitxml=test-results.xml -v | tee pytest_output.log
-          echo "Pytest completed with exit code ${PIPESTATUS[0]}"  # Debugging
-          cp pytest_output.log /tmp/pytest_output.log  # Save output for later
-          exit ${PIPESTATUS[0]}  # Ensures correct exit status is returned
+          EXIT_CODE=${PIPESTATUS[0]}  # Capture pytest exit code
+          echo "Pytest completed with exit code $EXIT_CODE"
+          cp pytest_output.log /tmp/pytest_output.log  # Store output for later use
+          exit $EXIT_CODE  # Ensure the correct exit code is returned to GitHub Actions
 
       - name: Show Test Summary
         run: |
