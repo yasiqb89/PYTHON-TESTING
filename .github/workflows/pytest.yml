@@ -26,9 +26,11 @@ jobs:
       - name: Debug Pytest Test Discovery
         run: pytest --collect-only  # Check if pytest can find the tests
 
-      - name: Run tests and generate report  # run tests with verbose output
+      - name: Run tests and generate report  # Run tests with verbose output
         id: pytest_run
-        run: pytest --junitxml=test-results.xml -v | tee pytest_output.log # Run pytest without specifying a folder
+        run: |
+          pytest --junitxml=test-results.xml -v | tee pytest_output.log
+          exit ${PIPESTATUS[0]}  # Ensures the correct exit status is returned # Run pytest without specifying a folder
 
       - name: Show Test Summary
         run: tail -20 pytest_output.log || echo "No pytest output available"
